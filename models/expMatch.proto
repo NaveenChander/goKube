@@ -1,0 +1,36 @@
+syntax ="proto3";
+
+package models;
+
+message PatronName{
+    string First=1;
+    string Last=2;
+    string Middle=3;
+}
+
+message PatronAddress{
+    string Street=1;
+    string City=2;
+    string State=3;
+    string Zip=4;
+}
+
+message PatronDriversLicense{
+    string State=1;
+    string Number=2;
+}
+
+message Patron{
+    PatronName Name =1;
+    PatronAddress Address=2;
+    PatronDriversLicense DriversLicense=3;
+    string Dob=4;
+    string Phone=5;
+    string Product=6;
+    string TIN=7;
+}
+
+
+
+
+

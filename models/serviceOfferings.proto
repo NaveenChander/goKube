@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package models;
+
+message ServiceOfferings{
+    int32 ServiceOfferingID = 1;
+    string Name = 2;
+    string ServiceDescription = 3;
+    string InternalServiceRecordID = 4;
+    string StartDate = 5;
+    string EndDate = 6;
+}
