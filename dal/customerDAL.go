@@ -47,7 +47,7 @@ func AddClientCredentialsCustomer(ClientAPIKey string, secret string, customerID
 		tx.Rollback()
 		isRollBack = true
 		log.Println(err3)
-		return models.DBdmlFailed, err3
+		return models.DBdmlFailed, err3.Error()
 	}
 	tx.Commit()
 
