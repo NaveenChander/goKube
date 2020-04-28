@@ -2,6 +2,9 @@ package api
 
 import (
 	"net/http"
+	"time"
+
+	"github.com/golang/protobuf/ptypes"
 
 	"github.com/naveenchander/GoKube/core"
 	"github.com/naveenchander/GoKube/models"
@@ -10,12 +13,12 @@ import (
 // AddClientCredentials ... Add Client Credentials
 func AddClientCredentials(w http.ResponseWriter, r *http.Request) {
 
+	startDate, _ := ptypes.TimestampProto(time.Date(2020, time.February, 2, 0, 0, 0, 0, time.UTC))
 	cc := models.CustomerCredentials{
 		CustomerID:   1,
 		ClientAPIKey: "testClientAPIKey1234",
-		Secret:       core.HashString("abc@123"),
-		StartDate:    "02/02/2020",
-		EndDate:      "02/02/2030",
+		Secret:       "abc@123",
+		StartDate:    startDate,
 	}
 
 	core.AddClientCredentials(cc)

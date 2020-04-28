@@ -2,9 +2,9 @@ package configuration
 
 var (
 	// Release is a semantic version of current build
-	Release = "unset"
+	Release = "0.0.2"
 	// PORT is a configurable via MakeFile
-	PORT = "unset"
+	PORT = "8000"
 	// DBSERVER database server name
 	DBSERVER = "localhost"
 	// DBPORT SQL Server PORT
@@ -15,5 +15,4 @@ var (
 	DBPASSWORD = "abc@123"
 	// DBCATALOGUE DB Name
 	DBCATALOGUE = "GoKube"
-);
-
+)

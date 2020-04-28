@@ -6,7 +6,6 @@ import (
 	"strings"
 
 	"github.com/naveenchander/GoKube/dal"
-	"github.com/naveenchander/GoKube/models"
 )
 
 // ValidateAuthHeader ... Validate Authentication Header
@@ -41,8 +40,4 @@ func validateClientAuthentication(apiKey, secret string) bool {
 		return false
 	}
 	return dal.GetAuthHeader(apiKey, secret)
-}
-
-func AddClientCredentials(clientCredentials models.CustomerCredentials) {
-
 }

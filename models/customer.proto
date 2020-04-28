@@ -2,12 +2,14 @@ syntax = "proto3";
 
 package models;
 
+import "google/protobuf/timestamp.proto";
+
 message Customer{
     int32 CustomerID = 1;
     string Name = 2;
     string InternalCustomerID = 3;
-    string StartDate = 4;
-    string EndDate = 5; 
+    google.protobuf.Timestamp StartDate = 4;
+    google.protobuf.Timestamp EndDate = 5; 
     string RowVersion = 6;
 }
 
@@ -15,15 +17,15 @@ message CustomerCredentials{
     string ClientAPIKey = 1;
     string Secret = 2;
     int32 CustomerID = 3;
-    string StartDate = 4;
-    string EndDate = 5;     
+    google.protobuf.Timestamp StartDate = 4;
+    google.protobuf.Timestamp EndDate = 5;     
 }
 
 message CustomerIP{
     string CustomerIP = 1;
     int32 CustomerID = 2;
-    string StartDate = 3;
-    string EndDate = 4;   
+    google.protobuf.Timestamp StartDate = 3;
+    google.protobuf.Timestamp EndDate = 4;   
 }
 
 message CustomerProduct{
@@ -35,7 +37,7 @@ message CustomerServiceOfferings{
     int32 CustomerID = 1;
     int32 CustomerServiceOfferingID = 2;
     int32 CustomerClientProductID = 3;
-    string StartDate = 4;
-    string EndDate = 5;
+    google.protobuf.Timestamp StartDate = 4;
+    google.protobuf.Timestamp EndDate = 5;
     string BillingCycle = 6;    
 }
