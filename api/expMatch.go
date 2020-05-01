@@ -5,7 +5,6 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/naveenchander/GoKube/core"
 	"github.com/naveenchander/GoKube/models"
 )
 
@@ -48,30 +47,18 @@ func Home(release string) http.HandlerFunc {
 }
 
 // ExpMatch ... ExpMatch exposed outside that takes patron details
-func ExpMatch(release string) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
+func ExpMatch(w http.ResponseWriter, r *http.Request) {
+	var patron models.Patron
 
-		var patron models.Patron
-
-		if core.ValidateAuthHeader(r.Header.Get("Authorization")) == false {
-			w.WriteHeader(http.StatusUnauthorized)
-			w.Write([]byte("Not authorized"))
-			return
-		}
-
-		errr := json.NewDecoder(r.Body).Decode(&patron)
-		if errr != nil {
-			log.Fatal("Error while Marshalling :", errr)
-		}
-
-		data, err := json.Marshal(patron)
-		if err != nil {
-			log.Fatal("Error while Marshalling :", err)
-		}
-
-		log.Print(data)
-
-		w.Header().Set("Content-Type", "application/json")
-		w.Write(data)
+	if errJSON := json.NewDecoder(r.Body).Decode(&patron); errJSON != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
 	}
+
+	data, err := json.Marshal(patron)
+	if err != nil {
+		log.Fatal("Error while Marshalling :", err)
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(data)
 }

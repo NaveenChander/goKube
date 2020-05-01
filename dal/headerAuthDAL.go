@@ -22,10 +22,9 @@ func GetAuthHeader(apiKey, secret string) bool {
 
 	result := ""
 
-	query := fmt.Sprintf("SELECT 'true' FROM dbo.[CustomerCredentials] WHERE [ClientAPIKey] = '%s' AND [Secret] = '%s'", apiKey, secret)
+	query := fmt.Sprintf("SELECT 'true' FROM [Customer].[CustomerCredentials] WHERE [ClientAPIKey] = '%s' AND [Secret] = '%s'", apiKey, secret)
 	err = db.QueryRow(query).Scan(&result)
 	if err != nil {
-		log.Fatal(err)
 		return false
 	}
 

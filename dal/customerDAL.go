@@ -8,6 +8,7 @@ import (
 	"time"
 
 	_ "github.com/denisenkom/go-mssqldb"
+	"github.com/golang/protobuf/ptypes"
 	"github.com/naveenchander/GoKube/configuration"
 	"github.com/naveenchander/GoKube/models"
 )
@@ -42,7 +43,7 @@ func AddClientCredentialsCustomer(ClientAPIKey string, secret string, customerID
 		}
 	}()
 
-	res, err3 := tx.Exec("EXEC [Customer].[usp_CustomerCredentials_add] @ClientAPIKey = ?, @Secret = ?, @CustomerID = ?, @startDate = ?, @endDate = null, @UnitTestBypass = 0", ClientAPIKey, secret, customerID, startDate)
+	_, err3 := tx.Exec("EXEC [Customer].[usp_CustomerCredentials_add] @ClientAPIKey = ?, @Secret = ?, @CustomerID = ?, @startDate = ?, @endDate = null, @UnitTestBypass = 0", ClientAPIKey, secret, customerID, startDate)
 	if err3 != nil {
 		tx.Rollback()
 		isRollBack = true
@@ -52,4 +53,49 @@ func AddClientCredentialsCustomer(ClientAPIKey string, secret string, customerID
 	tx.Commit()
 
 	return models.DBOK, "OK"
+}
+
+// GetClientCredentials ... GetClientCredentials by Customer ID
+func GetClientCredentials(customerID int) (models.DBErrorTypes, []models.CustomerCredentials) {
+
+	result := make([]models.CustomerCredentials, 1000)
+
+	connectionString := fmt.Sprintf("server=%s;user id=%s;password=%s;port=%d;database=%s",
+		configuration.DBSERVER, configuration.DBUSER, configuration.DBPASSWORD, configuration.DBPORT, configuration.DBCATALOGUE)
+
+	var err error
+
+	db, err = sql.Open("mssql", connectionString)
+	if err != nil {
+		return models.DBConectionUnavailable, nil
+	}
+	defer db.Close()
+
+	rows, err := db.Query("EXEC [Customer].[usp_CustomerCredentials_sel] @CustomerID = ?", customerID)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var _ClientAPIKey, _Secret, _StartDate, _EndDate string
+		var _CustomerID int
+
+		err = rows.Scan(&_ClientAPIKey, &_Secret, &_CustomerID, &_StartDate, &_EndDate)
+		if err != nil {
+			return models.DBError, nil
+		}
+		layout := "2006-01-02T15:04:05.000Z"
+		sd, _ := time.Parse(layout, _StartDate)
+		ed, _ := time.Parse(layout, _EndDate)
+
+		stDate, _ := ptypes.TimestampProto(sd)
+		enDate, _ := ptypes.TimestampProto(ed)
+
+		v := models.CustomerCredentials{ClientAPIKey: _ClientAPIKey, Secret: _Secret, CustomerID: int32(customerID), StartDate: stDate, EndDate: enDate}
+
+		result = append(result, v)
+	}
+
+	return models.DBOK, result
 }

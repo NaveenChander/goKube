@@ -58,7 +58,7 @@ BEGIN
 
 
     IF EXISTS (SELECT 1
-    FROM [Customer].[CustomerCredentials]
+    FROM [Customer].[Customer]
     WHERE @CustomerID = CustomerID)
 	BEGIN
 

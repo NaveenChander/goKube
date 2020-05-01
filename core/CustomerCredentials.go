@@ -10,9 +10,7 @@ import (
 )
 
 // AddClientCredentials ... AddClientCredentials
-func AddClientCredentials(clientCredentials models.CustomerCredentials) (error, string) {
-
-	clientCredentials.Secret = HashString(clientCredentials.Secret)
+func AddClientCredentials(clientCredentials models.CustomerCredentials) (models.ApplicationErrorCodes, string) {
 
 	startDate, err := ptypes.Timestamp(clientCredentials.StartDate)
 	if err != nil {
@@ -26,15 +24,14 @@ func AddClientCredentials(clientCredentials models.CustomerCredentials) (error, 
 		}
 	}
 
-	if errCode, errValue := dal.AddClientCredentialsCustomer(clientCredentials.ClientAPIKey, HashString(clientCredentials.Secret), int(clientCredentials.CustomerID), startDate, endDate), errCode == models.DBOK{
-		return nil, "Successfully Added"
-	}
-	else{
+	if errCode, errValue := dal.AddClientCredentialsCustomer(clientCredentials.ClientAPIKey, HashString(clientCredentials.Secret), int(clientCredentials.CustomerID), startDate, endDate); errCode == models.DBOK {
+		return models.HTTPOK, "Successfully Added"
+	} else {
 		switch errCode {
-		case DBInputErrorClientError:
-			return 
-			
+		case models.DBInputErrorClientError:
+			return models.HTTPBadRequest, errValue
+		default:
+			return models.HTTPInternalServerError, errValue
 		}
 	}
-
 }

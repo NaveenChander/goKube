@@ -6,7 +6,7 @@ IF EXISTS(SELECT *
 FROM sys.procedures
 WHERE name = 'usp_CustomerCredentials_sel')
 BEGIN
-    DROP PROCEDURE [Customer].[usp_CustomerCredentials_sel]
+  DROP PROCEDURE [Customer].[usp_CustomerCredentials_sel]
 END
 GO
 
@@ -29,24 +29,23 @@ Initial Version
 *****************************************************************************/
 
 CREATE PROCEDURE [Customer].[usp_CustomerCredentials_sel]
-    (
-    @CustomerID int
+  (
+  @CustomerID int
 )
 AS
 BEGIN
 
-    SET NOCOUNT ON;
+  SET NOCOUNT ON;
 
-    SELECT [ClientAPIKey]
+  SELECT [ClientAPIKey]
       , [Secret]
       , [CustomerID]
       , [StartDate]
       , [EndDate]
-      , [RowInserted]
-    FROM [GoKube].[Customer].[CustomerCredentials]
-    WHERE 
+  FROM [GoKube].[Customer].[CustomerCredentials]
+  WHERE 
 		CustomerID = @CustomerID
-        AND EndDate IS NULL
+    AND EndDate IS NULL
 
 END
 

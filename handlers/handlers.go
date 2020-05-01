@@ -7,6 +7,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/naveenchander/GoKube/api"
+	"github.com/naveenchander/GoKube/middleware"
 )
 
 // Router ... Define all external routes
@@ -24,7 +25,8 @@ func Router(release string) *mux.Router {
 
 	r := mux.NewRouter()
 	r.HandleFunc("/home", api.Home(release)).Methods("GET")
-	r.HandleFunc("/expMatch", api.ExpMatch(release)).Methods("POST")
+	r.HandleFunc("/expMatch", middleware.ValidateClientCredentials(api.ExpMatch)).Methods("POST")
+	r.HandleFunc("/ClientCredentials/{key}/{secret}", api.CreateAuthCode).Methods("GET")
 	r.HandleFunc("/ClientCredentials", api.AddClientCredentials).Methods("POST")
 	r.HandleFunc("/healthz", healthz).Methods("GET")
 	r.HandleFunc("/readyz", readyz(isReady)).Methods("GET")
