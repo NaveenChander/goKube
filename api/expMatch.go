@@ -2,9 +2,12 @@ package api
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
+	"regexp"
 
+	"github.com/naveenchander/GoKube/core"
 	"github.com/naveenchander/GoKube/models"
 )
 
@@ -59,6 +62,16 @@ func ExpMatch(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Fatal("Error while Marshalling :", err)
 	}
+
+	if ret, errREG := regexp.Match(`^\d`, []byte(patron.TIN)); errREG != nil || ret == false {
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprintf(w, "Invalid TIN number :"+patron.TIN)
+		return
+	}
+
+	core.ProcessExperian20(patron)
+
 	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
 	w.Write(data)
 }
