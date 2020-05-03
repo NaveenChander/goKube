@@ -47,6 +47,7 @@ BEGIN
     FROM [Customer].[Customer]
     WHERE 
 		CustomerID = @CustomerID
+        AND EndDate IS NULL
 
 END
 
