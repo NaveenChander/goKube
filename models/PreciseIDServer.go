@@ -2,12 +2,12 @@ package models
 
 // PreciseIDServer ... PreciseIDServer
 type PreciseIDServer struct {
-	PIDXMLVersion    string
-	Subscriber       Subscriber
-	PrimaryApplicant PrimaryApplicant
-	Verbose          string
-	Vendor           Vendor
-	Options          Options
+	PIDXMLVersion    string           `xml:"PIDXMLVersion"`
+	Subscriber       Subscriber       `xml:"Subscriber"`
+	PrimaryApplicant PrimaryApplicant `xml:"PrimaryApplicant"`
+	Verbose          string           `xml:"Verbose"` // Verbose = 'Y"
+	Vendor           Vendor           `xml:"Vendor"`
+	Options          Options          `xml:"Options"`
 }
 
 // Subscriber ... Subscriber
@@ -89,7 +89,7 @@ type Options struct {
 	BrokerNumber    int
 	FreezeKeyPIN    string
 	ReferenceNumber string
-	ProductOption   int
+	ProductOption   int // ProductOption = 20
 	DetailRequest   string
 	InquiryChannel  string
 }
