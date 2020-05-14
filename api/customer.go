@@ -13,6 +13,7 @@ import (
 	"github.com/golang/protobuf/ptypes"
 
 	"github.com/naveenchander/GoKube/core"
+	"github.com/naveenchander/GoKube/dal"
 	"github.com/naveenchander/GoKube/models"
 )
 
@@ -26,8 +27,9 @@ func AddClientCredentials(w http.ResponseWriter, r *http.Request) {
 		Secret:       "Abcd@1234",
 		StartDate:    startDate,
 	}
+	dalDep := dal.CustomerSQLDAL{}
 
-	core.AddClientCredentials(cc)
+	core.AddClientCredentials(cc, dalDep)
 }
 
 // CreateAuthCode ... CreateAuthCode

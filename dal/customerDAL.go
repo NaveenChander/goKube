@@ -16,8 +16,17 @@ import (
 var db *sql.DB
 var ctx context.Context
 
+// ICustomer ... ICustomer
+type ICustomer interface {
+	AddClientCredentialsCustomer(ClientAPIKey string, secret string, customerID int, startDate time.Time, endDate time.Time) (models.DBErrorTypes, string)
+	GetClientCredentials(customerID int) (models.DBErrorTypes, []models.CustomerCredentials)
+}
+
+type CustomerSQLDAL struct{}
+type CustomerTestDAL struct{}
+
 // AddClientCredentialsCustomer ... Opens DB Connections and return a connection object
-func AddClientCredentialsCustomer(ClientAPIKey string, secret string, customerID int, startDate time.Time, endDate time.Time) (models.DBErrorTypes, string) {
+func (dal CustomerSQLDAL) AddClientCredentialsCustomer(ClientAPIKey string, secret string, customerID int, startDate time.Time, endDate time.Time) (models.DBErrorTypes, string) {
 
 	isRollBack := false
 
@@ -56,7 +65,7 @@ func AddClientCredentialsCustomer(ClientAPIKey string, secret string, customerID
 }
 
 // GetClientCredentials ... GetClientCredentials by Customer ID
-func GetClientCredentials(customerID int) (models.DBErrorTypes, []models.CustomerCredentials) {
+func (dal CustomerSQLDAL) GetClientCredentials(customerID int) (models.DBErrorTypes, []models.CustomerCredentials) {
 
 	result := make([]models.CustomerCredentials, 1000)
 
