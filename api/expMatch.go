@@ -8,6 +8,7 @@ import (
 	"regexp"
 
 	"github.com/naveenchander/GoKube/core"
+	"github.com/naveenchander/GoKube/dal"
 	"github.com/naveenchander/GoKube/models"
 )
 
@@ -69,7 +70,9 @@ func ExpMatch(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	core.ProcessExperian20(patron)
+	dal := dal.Experian{}
+
+	core.ProcessExperian20(patron, dal)
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
