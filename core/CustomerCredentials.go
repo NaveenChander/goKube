@@ -1,7 +1,6 @@
 package core
 
 import (
-	"log"
 	"time"
 
 	"github.com/golang/protobuf/ptypes"
@@ -14,13 +13,13 @@ func AddClientCredentials(clientCredentials models.CustomerCredentials, d dal.IC
 
 	startDate, err := ptypes.Timestamp(clientCredentials.StartDate)
 	if err != nil {
-		log.Fatal("Unable convert start Date")
+		return models.HTTPBadRequest, err.Error()
 	}
 	var endDate time.Time
 	if clientCredentials.EndDate != nil {
 		endDate, err = ptypes.Timestamp(clientCredentials.EndDate)
 		if err != nil {
-			log.Fatal("Unable convert end Date")
+			return models.HTTPBadRequest, err.Error()
 		}
 	}
 

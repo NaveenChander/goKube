@@ -18,6 +18,8 @@ func main() {
 		configuration.Release,
 	)
 
+	configuration.InitStartup()
+
 	interupt := make(chan os.Signal, 1)
 	signal.Notify(interupt, os.Interrupt, syscall.SIGTERM)
 

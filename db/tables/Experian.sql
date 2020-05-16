@@ -16,9 +16,9 @@ CREATE TABLE [experian].[ExperianRequest]
 (
     [ExperianRequestID] [bigint] NOT NULL,
     [Request] [nvarchar](max) NOT NULL,
-    [Response] [nvarchar](max) NOT NULL,
+    [Response] [nvarchar](max) NULL,
     [RequestDate] [datetime] NOT NULL,
-    [ResponseDate] [datetime] NOT NULL,
+    [ResponseDate] [datetime] NULL,
     CONSTRAINT [PK_ExperianRequest] PRIMARY KEY CLUSTERED 
 (
 	[ExperianRequestID] ASC

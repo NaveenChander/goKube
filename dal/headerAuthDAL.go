@@ -35,8 +35,6 @@ func GetAuthHeader(apiKey, secret string) bool {
 	return false
 }
 
-
-
 // GetExperianAuthorized ... GetExperianAuthorized Checks APIKEY and returns if the user is Authorized
 func IsAuthorized(apiKey string, serviceName string) bool {
 	connectionString := fmt.Sprintf("server=%s;user id=%s;password=%s;port=%d;database=%s",
@@ -44,7 +42,8 @@ func IsAuthorized(apiKey string, serviceName string) bool {
 
 	db, err := sql.Open("mssql", connectionString)
 	if err != nil {
-		log.Fatal("Open connection failed:", err.Error())
+		log.Println("Open connection failed:", err.Error())
+		return false
 	}
 	defer db.Close()
 
@@ -52,15 +51,19 @@ func IsAuthorized(apiKey string, serviceName string) bool {
 	rows, errQuery := db.Query(query)
 
 	if errQuery != nil {
+		log.Println(errQuery.Error())
 		return false
 	}
 	defer rows.Close()
 
 	for rows.Next() {
-		var name string
-		if err := rows.Scan(&name); err != nil {
+		var name, desc  string
+		var serviceOfferingID, internalReferenceID int
+
+		if err := rows.Scan(&serviceOfferingID, &name, &desc, &internalReferenceID); err != nil {
 			// Check for a scan error.
 			// Query rows will be closed with defer.
+			log.Println(err.Error())
 			return false
 		}
 		if name == serviceName {

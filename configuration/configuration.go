@@ -20,9 +20,14 @@ var (
 )
 
 // GoFlake ... GoFlake
-var GoFlake *Flake
+var GoFlake *flake.Flake
 
 // InitStartup ... Init Global variables
 func InitStartup() {
-	Flake, _ = flake.New()
+	GoFlake, _ = flake.New()
+}
+
+// GetNextFlakeID ... Returns new Flake ID
+func GetNextFlakeID() uint64 {
+	return uint64(GoFlake.NextId())
 }

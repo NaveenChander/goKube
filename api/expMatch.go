@@ -3,9 +3,9 @@ package api
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
-	"regexp"
 
 	"github.com/naveenchander/GoKube/core"
 	"github.com/naveenchander/GoKube/dal"
@@ -52,29 +52,31 @@ func Home(release string) http.HandlerFunc {
 
 // ExpMatch ... ExpMatch exposed outside that takes patron details
 func ExpMatch(w http.ResponseWriter, r *http.Request) {
-	var patron models.Patron
 
-	if errJSON := json.NewDecoder(r.Body).Decode(&patron); errJSON != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		return
+	// var patron models.Patron
+	// if errJSON := json.NewDecoder(r.Body).Decode(&patron); errJSON != nil {
+	// 	w.WriteHeader(http.StatusBadRequest)
+	// 	return
+	// }
+
+	body, errParse := ioutil.ReadAll(r.Body)
+	if errParse != nil {
+		log.Fatal("Error Parsing body as JSON")
 	}
 
-	data, err := json.Marshal(patron)
-	if err != nil {
-		log.Fatal("Error while Marshalling :", err)
-	}
-
-	if ret, errREG := regexp.Match(`^\d`, []byte(patron.TIN)); errREG != nil || ret == false {
-		w.WriteHeader(http.StatusBadRequest)
-		fmt.Fprintf(w, "Invalid TIN number :"+patron.TIN)
-		return
-	}
+	log.Println("REad body" + string(body[:]))
+	requestBody := string(body[:])
 
 	dal := dal.ExperianSQLDAL{}
 
-	core.ProcessExperian20(patron, dal)
+	returnCode, returnValue := core.ProcessExperian20(requestBody, dal)
+	if returnCode != models.HTTPOK {
+		w.WriteHeader(int(returnCode))
+		fmt.Fprintf(w, "Error returned :"+returnValue)
+		return
+	}
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	w.Write(data)
+	w.Write([]byte(returnValue))
 }
