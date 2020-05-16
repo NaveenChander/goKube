@@ -23,14 +23,17 @@ func AddClientCredentials(clientCredentials models.CustomerCredentials, d dal.IC
 		}
 	}
 
-	if errCode, errValue := d.AddClientCredentialsCustomer(clientCredentials.ClientAPIKey, HashString(clientCredentials.Secret), int(clientCredentials.CustomerID), startDate, endDate); errCode == models.DBOK {
+	errCode, errValue := d.AddClientCredentialsCustomer(clientCredentials.ClientAPIKey, HashString(clientCredentials.Secret), int(clientCredentials.CustomerID), startDate, endDate)
+
+	if errCode == models.DBOK {
 		return models.HTTPOK, "Successfully Added"
-	} else {
-		switch errCode {
-		case models.DBInputErrorClientError:
-			return models.HTTPBadRequest, errValue
-		default:
-			return models.HTTPInternalServerError, errValue
-		}
 	}
+
+	switch errCode {
+	case models.DBInputErrorClientError:
+		return models.HTTPBadRequest, errValue
+	default:
+		return models.HTTPInternalServerError, errValue
+	}
+
 }
