@@ -70,7 +70,7 @@ func ExpMatch(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	dal := dal.Experian{}
+	dal := dal.ExperianSQLDAL{}
 
 	core.ProcessExperian20(patron, dal)
 

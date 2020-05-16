@@ -11,7 +11,7 @@ import (
 )
 
 // ValidateAuthHeader ... Validate Authentication Header
-func ValidateAuthHeader(header string) bool {
+func ValidateAuthHeader(header string, serviceName string) bool {
 
 	log.Println("AuthHeader : " + header)
 
@@ -39,7 +39,7 @@ func ValidateAuthHeader(header string) bool {
 	log.Println("API secret :" + items[1])
 	log.Println("API secret Hash:" + HashString(items[1]))
 
-	return validateClientAuthentication(items[0], HashString(items[1]))
+	return validateClientAuthentication(items[0], HashString(items[1]), serviceName)
 }
 
 // HashString ... Hash string
@@ -48,9 +48,9 @@ func HashString(data string) string {
 	return strings.ToUpper(hex.EncodeToString(sh[:]))
 }
 
-func validateClientAuthentication(apiKey, secret string) bool {
+func validateClientAuthentication(apiKey, secret string, serviceName string) bool {
 	if apiKey == "" || secret == "" {
 		return false
 	}
-	return dal.GetAuthHeader(apiKey, secret)
+	return dal.GetAuthHeader(apiKey, secret) && dal.IsAuthorized(apiKey, serviceName)
 }

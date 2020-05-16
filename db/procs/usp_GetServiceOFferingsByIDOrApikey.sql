@@ -47,13 +47,17 @@ BEGIN
 		[InternalReferenceID] = ISNULL(SO.InternalServiceRecordID,0)
 	FROM 
 		Customer.CustomerCredentials CC
+	INNER JOIN Customer C
+		ON C.CustomerID = CC.CustomerID
 	INNER JOIN Customer.CustomerServiceOfferings CSO
 		ON CSO.CustomerID = CC.CustomerID
 	INNER JOIN ServiceOfferings.ServiceOfferings SO
 		ON SO.ServiceOfferingID = CSO.CustomerServiceOfferingID
 	WHERE 	
-		(@apiKey = '' OR CC.ClientAPIKey = @apiKey)
+		C.EndDate IS NULL AND CC.EndDate IS NULL AND CSO.EndDate IS NULL AND SO.EndDate IS NULL
+		AND
+		((@apiKey = '' OR CC.ClientAPIKey = @apiKey)
 		OR
-		(@CustomerID = 0 OR  CC.CustomerID = @CustomerID)
+		(@CustomerID = 0 OR  CC.CustomerID = @CustomerID))
 
 END

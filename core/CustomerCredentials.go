@@ -10,7 +10,7 @@ import (
 )
 
 // AddClientCredentials ... AddClientCredentials
-func AddClientCredentials(clientCredentials models.CustomerCredentials, d dal.CustomerSQLDAL) (models.ApplicationErrorCodes, string) {
+func AddClientCredentials(clientCredentials models.CustomerCredentials, d dal.ICustomer) (models.ApplicationErrorCodes, string) {
 
 	startDate, err := ptypes.Timestamp(clientCredentials.StartDate)
 	if err != nil {

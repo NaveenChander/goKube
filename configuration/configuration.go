@@ -1,5 +1,7 @@
 package configuration
 
+import flake "github.com/davidnarayan/go-flake"
+
 var (
 	// Release is a semantic version of current build
 	Release = "0.0.2"
@@ -16,3 +18,11 @@ var (
 	// DBCATALOGUE DB Name
 	DBCATALOGUE = "GoKube"
 )
+
+// GoFlake ... GoFlake
+var GoFlake *Flake
+
+// InitStartup ... Init Global variables
+func InitStartup() {
+	Flake, _ = flake.New()
+}

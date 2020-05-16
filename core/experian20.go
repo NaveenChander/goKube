@@ -1,9 +1,12 @@
 package core
 
-import "github.com/naveenchander/GoKube/models"
+import (
+	"github.com/naveenchander/GoKube/dal"
+	"github.com/naveenchander/GoKube/models"
+)
 
 // ProcessExperian20 .. ProcessExperian20
-func ProcessExperian20(patron models.Patron, dal dal.Experian) {
+func ProcessExperian20(patron models.Patron, expDal dal.IExperian) {
 
 	// Save Incoming Request  ?????????
 
@@ -13,9 +16,4 @@ func ProcessExperian20(patron models.Patron, dal dal.Experian) {
 
 	// return to API
 
-}
-
-func IsAuthorized(apiKey string, dal Experian) bool {
-
-	return true
 }
