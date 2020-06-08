@@ -8,6 +8,7 @@ DBPORT?=1433
 DBUSER?=sa
 DBPASSWORD?=abc@123
 DBCATALOGUE?=GoKube
+EXPCachePeriod?=1440
 
 clean:
 		del /f ${APP}
@@ -20,7 +21,8 @@ build: clean
 		-X configuration.DBPORT=${DBPORT} \
 		-X configuration.DBUSER=${DBUSER} \
 		-X configuration.DBPASSWORD=${DBPASSWORD} \
-		-X configuration.DBCATALOGUE=${DBCATALOGUE}" \
+		-X configuration.DBCATALOGUE=${DBCATALOGUE} \
+		-X configuration.EXPCachePeriod=${EXPCachePeriod}" \
 		-o ${APP}
 
 container: build

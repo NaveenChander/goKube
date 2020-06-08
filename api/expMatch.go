@@ -64,7 +64,7 @@ func ExpMatch(w http.ResponseWriter, r *http.Request) {
 		log.Fatal("Error Parsing body as JSON")
 	}
 
-	log.Println("REad body" + string(body[:]))
+	log.Println("Read body" + string(body[:]))
 	requestBody := string(body[:])
 
 	dal := dal.ExperianSQLDAL{}

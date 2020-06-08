@@ -6,6 +6,7 @@ message PatronName{
     string First=1;
     string Last=2;
     string Middle=3;
+    string Gen=4;
 }
 
 message PatronAddress{
