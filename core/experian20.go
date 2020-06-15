@@ -34,6 +34,8 @@ func ProcessExperian20(incomingRequest string, expDal dal.IExperian) (models.App
 
 	cacheValue, errCache := getCache("Experian" + patron.TIN)
 	if errCache != nil {
+		log.Println("Data not found in Cache.  Proceeding to request Experian Cache.")
+
 		// TODO: Call Exp 20 Outbound
 		cacheValue = string(data[:])
 		_ = setCache("Experian"+patron.TIN, cacheValue, 60)
@@ -47,4 +49,11 @@ func ProcessExperian20(incomingRequest string, expDal dal.IExperian) (models.App
 	}
 	return models.HTTPOK, string(data[:])
 
+}
+
+func buildExperianRequest(patron models.Patron) string {
+
+	var request = models.Experian
+
+	return ""
 }

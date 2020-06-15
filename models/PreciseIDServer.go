@@ -1,5 +1,20 @@
 package models
 
+// Experian ... Experian
+type Experian struct {
+	FraudSolutions FraudSolutions `xml:"FraudSolutions"`
+}
+
+// FraudSolutions ... FraudSolutions
+type FraudSolutions struct {
+	Request Request `xml:"Request"`
+}
+
+// Request ... Request
+type Request struct {
+	PreciseIDServer []PreciseIDServer `xml:"PreciseIDServer"`
+}
+
 // PreciseIDServer ... PreciseIDServer
 type PreciseIDServer struct {
 	PIDXMLVersion    string           `xml:"PIDXMLVersion"`
