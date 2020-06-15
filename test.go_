@@ -1,39 +1,72 @@
 package main
 
 import (
+	"context"
 	"crypto/sha256"
 	"encoding/base64"
 	"encoding/hex"
 	"fmt"
+	"log"
+	"os"
 	"strings"
+	"time"
+
+	// "github.com/go-redis/redis/v8"
+	"github.com/gomodule/redigo/redis"
 )
 
+var ctx = context.Background()
+var pool *redis.Pool
+
 func main() {
-	// startDate, _ := ptypes.TimestampProto(time.Date(2020, time.February, 2, 0, 0, 0, 0, time.UTC))
-	// strtDate, err := ptypes.Timestamp(startDate)
 
-	// fmt.Println(strtDate)
-	// if err != nil {
-	// 	log.Fatal("Unable convert start Date")
-	// }
+	// ----------------- 64 bit encoding --------------- //
+	// key := "JepWgR9hhxJTRS-E*v+D~BcP8"
+	// secret := "Qx+z$(T#kEDBSrRCnH9G+s&)L$t4Bgnct4&ka*aF"
 
-	key := "JepWgR9hhxJTRS-E*v+D~BcP8"
-	secret := "Qx+z$(T#kEDBSrRCnH9G+s&)L$t4Bgnct4&ka*aF"
+	// // key := "testAPIKey"
+	// // secret := "Abcd@1234"
 
-	// key := "testAPIKey"
-	// secret := "Abcd@1234"
+	// basic := fmt.Sprintf("%s:%s", key, secret)
+	// b := []byte(basic)
 
-	basic := fmt.Sprintf("%s:%s", key, secret)
-	b := []byte(basic)
+	// result := base64.StdEncoding.EncodeToString(b)
+	// ret := validateAuthHeader("BASIC YyRoQyR3Y3ltJlpnajZKK1A1RXhkbXJNZTpQQnU2am5mZkVxPSM4KUA0YzlEdSFKUk52ck51UkByPThXUlZoY0A2")
 
-	result := base64.StdEncoding.EncodeToString(b)
-	ret := ValidateAuthHeader("BASIC YyRoQyR3Y3ltJlpnajZKK1A1RXhkbXJNZTpQQnU2am5mZkVxPSM4KUA0YzlEdSFKUk52ck51UkByPThXUlZoY0A2")
-
-	fmt.Println(ret)
-	fmt.Println(result)
-	fmt.Println("WkpCZG4mNmNrVCYhMlMoSzRRY152SlN5bjpONSRwRW5rdlprZDdMcC0pM0IqYXVwWThyJHQyI3kzc0NyQnEycEdl")
+	// fmt.Println(ret)
+	// fmt.Println(result)
+	// fmt.Println("WkpCZG4mNmNrVCYhMlMoSzRRY152SlN5bjpONSRwRW5rdlprZDdMcC0pM0IqYXVwWThyJHQyI3kzc0NyQnEycEdl")
 
 	/// YyRoQyR3Y3ltJlpnajZKK1A1RXhkbXJNZTpQQnU2am5mZkVxPSM4KUA0YzlEdSFKUk52ck51UkByPThXUlZoY0A2
+
+	// --------------- Redis example ---------------//
+	// t, _ := time.ParseDuration("5s")
+
+	// setCache("TestKey", "TestValue", t)
+	// value, _ := getCache("TestKey")
+	// fmt.Println(value)
+
+	// time.Sleep(6 * time.Second)
+	// value, _ = getCache("TestKey")
+
+	// fmt.Println(value)
+
+	// --------------- Redis Pool ---------------- //
+
+	if pool == nil {
+		fmt.Println("Connection Pool is nil")
+	}
+
+	initPool()
+	set("TestKey", "TestValue", 10)
+
+	value, _ := get("TestKey")
+	fmt.Println(value)
+	time.Sleep(11 * time.Second)
+	value, _ = get("TestKey")
+
+	fmt.Println(value)
+
 }
 
 // HashString ... Hash string
@@ -42,7 +75,7 @@ func HashString(data string) string {
 	return strings.ToUpper(hex.EncodeToString(sh[:]))
 }
 
-func ValidateAuthHeader(header string) bool {
+func validateAuthHeader(header string) bool {
 
 	fmt.Println("AuthHeader : " + header)
 
@@ -71,3 +104,70 @@ func ValidateAuthHeader(header string) bool {
 	fmt.Println("API secret Hash:" + HashString(items[1]))
 	return true
 }
+
+func initPool() {
+	pool = &redis.Pool{
+		MaxIdle:   80,
+		MaxActive: 12000,
+		Dial: func() (redis.Conn, error) {
+			conn, err := redis.Dial("tcp", "localhost:6379")
+			if err != nil {
+				log.Printf("ERROR: fail init redis pool: %s", err.Error())
+				os.Exit(1)
+			}
+			return conn, err
+		},
+	}
+}
+
+func set(key string, val string, expirationInSeconds int) error {
+	// get conn and put back when exit from method
+	conn := pool.Get()
+	defer conn.Close()
+
+	_, err := conn.Do("SET", key, val)
+	if err != nil {
+		log.Printf("ERROR: fail set key %s, val %s, error %s", key, val, err.Error())
+		return err
+	}
+
+	_, err = conn.Do("EXPIRE", key, expirationInSeconds)
+	if err != nil {
+		log.Printf("ERROR: fail set key %s, val %s, error %s", key, val, err.Error())
+		return err
+	}
+
+	return nil
+}
+
+func get(key string) (string, error) {
+	// get conn and put back when exit from method
+	conn := pool.Get()
+	defer conn.Close()
+
+	s, err := redis.String(conn.Do("GET", key))
+	if err != nil {
+		log.Printf("ERROR: fail get key %s, error %s", key, err.Error())
+		return "", err
+	}
+
+	return s, nil
+}
+
+// func initCache() *redis.Client {
+// 	return redis.NewClient(&redis.Options{
+// 		Addr:     "127.0.0.1:6379",
+// 		Password: "", // no password set
+// 		DB:       0,  // use default DB
+// 	})
+// }
+
+// func getCache(key string) (string, error) {
+// 	rdc := initCache()
+// 	return rdc.Get(ctx, key).Result()
+// }
+
+// func setCache(key string, value string, expiration time.Duration) error {
+// 	rdc := initCache()
+// 	return rdc.Set(ctx, key, value, expiration).Err()
+// }

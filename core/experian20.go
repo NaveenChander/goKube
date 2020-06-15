@@ -32,9 +32,14 @@ func ProcessExperian20(incomingRequest string, expDal dal.IExperian) (models.App
 		return models.HTTPInternalServerError, errValue
 	}
 
-	// TODO: Call Exp 20 Outbound
+	cacheValue, errCache := getCache("Experian" + patron.TIN)
+	if errCache != nil {
+		// TODO: Call Exp 20 Outbound
+		cacheValue = string(data[:])
+		_ = setCache("Experian"+patron.TIN, cacheValue, 60)
+	}
 
-	response := string(data[:])
+	response := cacheValue
 
 	returnValue, errValue = expDal.UpdateExperianResponse(flakeID, response)
 	if returnValue != models.DBOK {
