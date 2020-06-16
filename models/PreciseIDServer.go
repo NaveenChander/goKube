@@ -2,18 +2,17 @@ package models
 
 // Experian ... Experian
 type Experian struct {
-	FraudSolutions FraudSolutions `xml:"FraudSolutions"`
+	FraudSolutions struct {
+		Request struct {
+			PreciseIDServer []PreciseIDServer `xml:"PreciseIDServer"`
+		} `xml:"Request"`
+	} `xml:"FraudSolutions"`
 }
 
-// FraudSolutions ... FraudSolutions
-type FraudSolutions struct {
-	Request Request `xml:"Request"`
-}
-
-// Request ... Request
-type Request struct {
-	PreciseIDServer []PreciseIDServer `xml:"PreciseIDServer"`
-}
+// // ExperianRequest ... ExperianRequest
+// type ExperianRequest struct {
+// 	PreciseIDServer []PreciseIDServer `xml:"PreciseIDServer"`
+// }
 
 // PreciseIDServer ... PreciseIDServer
 type PreciseIDServer struct {

@@ -53,7 +53,44 @@ func ProcessExperian20(incomingRequest string, expDal dal.IExperian) (models.App
 
 func buildExperianRequest(patron models.Patron) string {
 
-	var request = models.Experian
+	// var request models.Experian
+	var preciseID models.PreciseIDServer
+	var phone models.PrimaryApplicantPhone
+
+	preciseID.Verbose = "Y"
+	// Subscriber
+	preciseID.Subscriber.OpInitials = "ES"
+	preciseID.Subscriber.Preamble = "TRS2"
+	preciseID.Subscriber.SubCode = 1974710
+
+	// Vendor
+	preciseID.Vendor.VendorNumber = "000"
+
+	// Options
+	preciseID.Options.ProductOption = 20
+
+	// primary Applicant
+	preciseID.PrimaryApplicant.DOB = patron.Dob
+	preciseID.PrimaryApplicant.Name.First = patron.Name.First
+	preciseID.PrimaryApplicant.Name.Middle = patron.Name.Middle
+	preciseID.PrimaryApplicant.Name.Surname = patron.Name.Last
+	preciseID.PrimaryApplicant.Name.Gen = patron.Name.Gen
+	preciseID.PrimaryApplicant.SSN = patron.TIN
+	preciseID.PrimaryApplicant.DOB = patron.Dob
+
+	// Primary Applicant Current Address
+	preciseID.PrimaryApplicant.CurrentAddress.Street = patron.Address.Street
+	preciseID.PrimaryApplicant.CurrentAddress.State = patron.Address.State
+	preciseID.PrimaryApplicant.CurrentAddress.City = patron.Address.City
+
+	// Primary Applicant Drivers License
+	preciseID.PrimaryApplicant.DriverLicense.Number = patron.DriversLicense.Number
+	preciseID.PrimaryApplicant.DriverLicense.State = patron.DriversLicense.State
+
+	// primary Applicant Phones
+	re := regexp.MustCompile(`[^\d]`)
+	phone.Number = re.ReplaceAllString(patron.Phone, "")
+	append(preciseID.PrimaryApplicant.Phones, phone)
 
 	return ""
 }
