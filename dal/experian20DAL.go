@@ -6,28 +6,52 @@ import (
 	"log"
 
 	_ "github.com/denisenkom/go-mssqldb"
-	"github.com/naveenchander/GoKube/configuration"
 	"github.com/naveenchander/GoKube/models"
 )
 
 // IExperian ... IExperian
 type IExperian interface {
+	SetDBVal(dbServer, dbUser, dbPassword, dbCatalogue string, dbPort int)
 	CreateExperianRequest(experianRequestID uint64, request string) (models.DBErrorTypes, string)
 	UpdateExperianResponse(experianRequestID uint64, response string) (models.DBErrorTypes, string)
 }
 
 // ExperianSQLDAL ... ExperianSQLDAL - SQL Call for Experian
-type ExperianSQLDAL struct{}
+type ExperianSQLDAL struct {
+	dbServer, dbUser, dbPassword, dbCatalogue string
+	dbPort                                    int
+}
 
 // ExperianTestDAL ... ExperianTestDAL - Mock Call for Experian
-type ExperianTestDAL struct{}
+type ExperianTestDAL struct {
+	dbServer, dbUser, dbPassword, dbCatalogue string
+	dbPort                                    int
+}
+
+// SetDBVal ... SetDBVal
+func (expDal ExperianSQLDAL) SetDBVal(dbServer, dbUser, dbPassword, dbCatalogue string, dbPort int) {
+	expDal.dbServer = dbServer
+	expDal.dbUser = dbUser
+	expDal.dbPassword = dbPassword
+	expDal.dbCatalogue = dbCatalogue
+	expDal.dbPort = dbPort
+}
+
+// SetDBVal ... SetDBVal
+func (expDal ExperianTestDAL) SetDBVal(dbServer, dbUser, dbPassword, dbCatalogue string, dbPort int) {
+	expDal.dbServer = dbServer
+	expDal.dbUser = dbUser
+	expDal.dbPassword = dbPassword
+	expDal.dbCatalogue = dbCatalogue
+	expDal.dbPort = dbPort
+}
 
 // CreateExperianRequest ... CreateExperianRequest
 func (expDal ExperianSQLDAL) CreateExperianRequest(experianRequestID uint64, request string) (models.DBErrorTypes, string) {
 	isRollBack := false
 
 	connectionString := fmt.Sprintf("server=%s;user id=%s;password=%s;port=%d;database=%s",
-		configuration.DBSERVER, configuration.DBUSER, configuration.DBPASSWORD, configuration.DBPORT, configuration.DBCATALOGUE)
+		expDal.dbServer, expDal.dbUser, expDal.dbPassword, expDal.dbPort, expDal.dbCatalogue)
 
 	var err error
 
@@ -68,7 +92,7 @@ func (expDal ExperianSQLDAL) UpdateExperianResponse(experianRequestID uint64, re
 	isRollBack := false
 
 	connectionString := fmt.Sprintf("server=%s;user id=%s;password=%s;port=%d;database=%s",
-		configuration.DBSERVER, configuration.DBUSER, configuration.DBPASSWORD, configuration.DBPORT, configuration.DBCATALOGUE)
+		expDal.dbServer, expDal.dbUser, expDal.dbPassword, expDal.dbPort, expDal.dbCatalogue)
 
 	var err error
 

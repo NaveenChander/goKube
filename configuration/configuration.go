@@ -17,8 +17,14 @@ var (
 	DBPASSWORD = "abc@123"
 	// DBCATALOGUE DB Name
 	DBCATALOGUE = "GoKube"
-	// EXPCachePeriod EXP MATCH Cache Period in minutes
-	EXPCachePeriod = "1440"
+	// EXPCachePeriod EXP MATCH Cache Period in Seconds
+	EXPCachePeriod = "60"
+	// EXPURL ... EXPURL
+	EXPURL = ""
+	// EXPUSERNAME ... EXPUSERNAME
+	EXPUSERNAME = ""
+	// EXPPASSWORD ... EXPPASSWORD
+	EXPPASSWORD = ""
 )
 
 // GoFlake ... GoFlake

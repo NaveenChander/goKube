@@ -7,9 +7,11 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/naveenchander/GoKube/configuration"
 	"github.com/naveenchander/GoKube/core"
 	"github.com/naveenchander/GoKube/dal"
 	"github.com/naveenchander/GoKube/models"
+	"github.com/naveenchander/GoKube/outbound"
 )
 
 // Home ... Test Function for ExpMatch will be removed soon
@@ -68,8 +70,12 @@ func ExpMatch(w http.ResponseWriter, r *http.Request) {
 	requestBody := string(body[:])
 
 	dal := dal.ExperianSQLDAL{}
+	dal.SetDBVal(configuration.DBSERVER, configuration.DBUSER, configuration.DBPASSWORD, configuration.DBCATALOGUE, configuration.DBPORT)
 
-	returnCode, returnValue := core.ProcessExperian20(requestBody, dal)
+	outbound := outbound.ExperianCall{}
+	outbound.SetExperianDetails(configuration.EXPURL, configuration.EXPUSERNAME, configuration.EXPPASSWORD)
+
+	returnCode, returnValue := core.ProcessExperian20(requestBody, dal, outbound)
 	if returnCode != models.HTTPOK {
 		w.WriteHeader(int(returnCode))
 		fmt.Fprintf(w, "Error returned :"+returnValue)

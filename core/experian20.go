@@ -11,10 +11,11 @@ import (
 	"github.com/naveenchander/GoKube/configuration"
 	"github.com/naveenchander/GoKube/dal"
 	"github.com/naveenchander/GoKube/models"
+	"github.com/naveenchander/GoKube/outbound"
 )
 
 // ProcessExperian20 .. ProcessExperian20
-func ProcessExperian20(incomingRequest string, expDal dal.IExperian) (models.ApplicationErrorCodes, string) {
+func ProcessExperian20(incomingRequest string, expDal dal.IExperian, expOutbound outbound.IExperian) (models.ApplicationErrorCodes, string) {
 	var patron models.Patron
 	json.Unmarshal([]byte(incomingRequest), &patron)
 
@@ -55,9 +56,14 @@ func ProcessExperian20(incomingRequest string, expDal dal.IExperian) (models.App
 			log.Println("Invalid Data while creating XML  :" + errXML.Error())
 			return models.HTTPBadRequest, errXML.Error()
 		}
-		// TODO: Call Exp 20 Outbound
 
-		cacheValue = xmlForExperian //string(data[:])
+		ret, err := expOutbound.Dial(xmlForExperian)
+		if err != nil {
+			return models.HTTPInternalServerError, err.Error()
+		}
+		// TODO: Check Returu Value and remove TODO
+
+		cacheValue = ret
 		_ = setCacheInBytes("Experian:"+patron.TIN, cacheValue, 60)
 	} else {
 		log.Println("Found in Cache Responding from Cache")
