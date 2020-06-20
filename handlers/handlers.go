@@ -26,6 +26,7 @@ func Router(release string) *mux.Router {
 	r := mux.NewRouter()
 	r.HandleFunc("/home", api.Home(release)).Methods("GET")
 	r.HandleFunc("/expMatch", middleware.ValidateClientCredentials(api.ExpMatch, "expMatch")).Methods("POST")
+	r.HandleFunc("/idMatch", middleware.ValidateClientCredentials(api.IDMatch, "idMatch")).Methods("POST")
 	r.HandleFunc("/ClientCredentials/{key}/{secret}", api.CreateAuthCode).Methods("GET")
 	r.HandleFunc("/ClientCredentials", api.AddClientCredentials).Methods("POST")
 	r.HandleFunc("/healthz", healthz).Methods("GET")

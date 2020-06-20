@@ -1,7 +1,6 @@
 package api
 
 import (
-	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -14,46 +13,8 @@ import (
 	"github.com/naveenchander/GoKube/outbound"
 )
 
-// Home ... Test Function for ExpMatch will be removed soon
-func Home(release string) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
+func IDMatch(w http.ResponseWriter, r *http.Request) {
 
-		patronInfo := &models.Patron{
-			Name: &models.PatronName{
-				First:  "Shankar",
-				Last:   "G",
-				Middle: "A",
-			},
-			Address: &models.PatronAddress{
-				Street: "10000 S Eastern",
-				City:   "Henderson",
-				State:  "NV",
-				Zip:    "89052-5542",
-			},
-			DriversLicense: &models.PatronDriversLicense{
-				State:  "",
-				Number: "",
-			},
-			Dob:     "01/20/1959",
-			Phone:   "1531535151",
-			Product: "CentralCredit",
-			TIN:     "666724863",
-		}
-
-		data, err := json.Marshal(patronInfo)
-		if err != nil {
-			log.Fatal("Error while Marshalling :", err)
-		}
-
-		// fmt.Fprintf(w, "Welcome Home "+release) ---> Need the change Unit Test
-
-		w.Header().Set("Content-Type", "application/json")
-		w.Write(data)
-	}
-}
-
-// ExpMatch ... ExpMatch exposed outside that takes patron details
-func ExpMatch(w http.ResponseWriter, r *http.Request) {
 	body, errParse := ioutil.ReadAll(r.Body)
 	if errParse != nil {
 		log.Fatal("Error Parsing body as JSON")
