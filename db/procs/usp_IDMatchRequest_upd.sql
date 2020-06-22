@@ -1,16 +1,16 @@
 USE [GoKube]
 GO
 
-/****** Object:  StoredProcedure [experian].[usp_ExperianRequest_upd]    Script Date: 4/23/2020 1:38:04 PM ******/
+/****** Object:  StoredProcedure [IDMatch].[usp_IDMatchRequest_upd]    Script Date: 4/23/2020 1:38:04 PM ******/
 IF EXISTS(SELECT *
 FROM sys.procedures
-WHERE name = 'usp_ExperianRequest_upd')
+WHERE name = 'usp_IDMatchRequest_upd')
 BEGIN
-    DROP PROCEDURE [experian].[usp_ExperianRequest_upd]
+    DROP PROCEDURE [idMatch].[usp_IDMatchRequest_upd]
 END
 GO
 
-/****** Object:  StoredProcedure [experian].[usp_ExperianRequest_upd]    Script Date: 05/15/2020 1:38:04 PM ******/
+/****** Object:  StoredProcedure [idMatch].[usp_IDMatchRequest_upd]    Script Date: 05/15/2020 1:38:04 PM ******/
 SET ANSI_NULLS ON
 GO
 
@@ -22,15 +22,15 @@ GO
 
 DATE        VERSION       AUTHOR                REFERENCE
 
-2020-05-15  1.0           Naveen Prabhaker
+2020-06-22  1.0           Naveen Prabhaker
 
 Initial Version
 
 *****************************************************************************/
 
-CREATE PROCEDURE [experian].[usp_ExperianRequest_upd]
+CREATE PROCEDURE [idMatch].[usp_IDMatchRequest_upd]
     (
-    @experianRequestID nvarchar(100),
+    @IDMatchRequestID nvarchar(100),
     @Response nvarchar(max),
     @UnitTestBypass bit=0
 )
@@ -52,21 +52,21 @@ BEGIN
     END
 
     IF EXISTS (SELECT 1
-    FROM [experian].ExperianRequest
-    WHERE ExperianRequestID = @experianRequestID)
+    FROM [IDMatch].IDMatchRequest
+    WHERE IDMatchRequestID = @IDMatchRequestID)
 	BEGIN
 
         UPDATE 
-		[experian].[ExperianRequest]
+		[IDMatch].[IDMatchRequest]
 	SET 
 		[Response] = @Response
 		,[ResponseDate] = GETUTCDATE()
 	WHERE 
-		[ExperianRequestID] = @experianRequestID
+		[IDMatchRequestID] = @IDMatchRequestID
     END
 	ELSE
 	BEGIN
-        RAISERROR('ExperianRequestID does not exists',16,1);
+        RAISERROR('IDMatchRequestID does not exists',16,1);
         RETURN;
     END
 
