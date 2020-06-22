@@ -8,8 +8,8 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strconv"
 	"strings"
-	"time"
 
 	// "github.com/go-redis/redis/v8"
 	"github.com/gomodule/redigo/redis"
@@ -53,20 +53,42 @@ func main() {
 
 	// --------------- Redis Pool ---------------- //
 
-	if pool == nil {
-		fmt.Println("Connection Pool is nil")
+	// if pool == nil {
+	// 	fmt.Println("Connection Pool is nil")
+	// }
+
+	// initPool()
+	// set("TestKey", "TestValue", 10)
+
+	// value, _ := get("TestKey")
+	// fmt.Println(value)
+	// time.Sleep(11 * time.Second)
+	// value, _ = get("TestKey")
+
+	// fmt.Println(value)
+
+	// --------------- Hash Maps -------------- //
+
+	var config ConfigDeps
+	if len(config.dep) == 0 {
+		fmt.Println("empty")
+		config.dep = make(map[string]string)
 	}
+	fmt.Println(len(config.dep))
+	config.dep["Name"] = "Ishaan"
+	val, est := config.dep["Name"]
+	fmt.Println("Value : " + val + " est: " + strconv.FormatBool(est))
 
-	initPool()
-	set("TestKey", "TestValue", 10)
+	val, est = config.dep["Name1"]
+	fmt.Println("Value : " + val + " est: " + strconv.FormatBool(est))
 
-	value, _ := get("TestKey")
-	fmt.Println(value)
-	time.Sleep(11 * time.Second)
-	value, _ = get("TestKey")
+	fmt.Println(len(config.dep))
 
-	fmt.Println(value)
+}
 
+// ConfigDeps ... ConfigDeps
+type ConfigDeps struct {
+	dep map[string]string
 }
 
 // HashString ... Hash string

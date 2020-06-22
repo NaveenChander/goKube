@@ -14,7 +14,7 @@ import (
 )
 
 // ProcessExperian20 .. ProcessExperian20
-func ProcessExperian20(incomingRequest string, expDal dal.IExperian, expOutbound outbound.IExperian) (models.ApplicationErrorCodes, string) {
+func ProcessExperian20(incomingRequest string, expDal dal.IExperian, expOutbound outbound.IExperian, dependencies models.IConfig) (models.ApplicationErrorCodes, string) {
 	var patron models.Patron
 	json.Unmarshal([]byte(incomingRequest), &patron)
 
@@ -35,13 +35,24 @@ func ProcessExperian20(incomingRequest string, expDal dal.IExperian, expOutbound
 			log.Println("Invalid Date format Must be in [yyyy/mm/dd] or [mm/dd/yyyy] :" + patron.Dob)
 			return models.HTTPBadRequest, tErr.Error()
 		}
-
 	}
 
 	log.Println("Incoming Request -> " + string(data[:]))
 
 	flakeID := GetNextFlakeID()
-	returnValue, errValue := expDal.CreateExperianRequest(flakeID, incomingRequest)
+
+	keyValue, exists := dependencies.GetConfiguration("CryptoKey")
+	if exists == false {
+		return models.HTTPInternalServerError, "CryptoKey not set"
+	}
+
+	encryptedValue, err := encrypt(keyValue, incomingRequest)
+	if err != nil {
+		log.Println(err)
+		return models.HTTPInternalServerError, "Error while encrypting data"
+	}
+
+	returnValue, errValue := expDal.CreateExperianRequest(flakeID, encryptedValue)
 	if returnValue != models.DBOK {
 		return models.HTTPInternalServerError, errValue
 	}

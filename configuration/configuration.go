@@ -24,5 +24,5 @@ var (
 	// EXPPASSWORD ... EXPPASSWORD
 	EXPPASSWORD = ""
 	// CryptoKey ... Crypto Key
-	CryptoKey = "1709675319508246528"
+	CryptoKey = "1709675319508246"
 )

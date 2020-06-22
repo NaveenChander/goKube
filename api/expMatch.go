@@ -68,7 +68,10 @@ func ExpMatch(w http.ResponseWriter, r *http.Request) {
 	outbound := outbound.ExperianCall{}
 	outbound.SetExperianDetails(configuration.EXPURL, configuration.EXPUSERNAME, configuration.EXPPASSWORD)
 
-	returnCode, returnValue := core.ProcessExperian20(requestBody, &dal, outbound)
+	dependencies := models.ConfigDeps{}
+	dependencies.SetConfiguration("CryptoKey", configuration.CryptoKey)
+
+	returnCode, returnValue := core.ProcessExperian20(requestBody, &dal, &outbound, &dependencies)
 	if returnCode != models.HTTPOK {
 		w.WriteHeader(int(returnCode))
 		fmt.Fprintf(w, "Error returned :"+returnValue)

@@ -26,7 +26,7 @@ type ExperianTestCall struct {
 }
 
 // SetExperianDetails ... SetExperianDetails
-func (c ExperianTestCall) SetExperianDetails(url, username, password string) {
+func (c *ExperianTestCall) SetExperianDetails(url, username, password string) {
 	c.url = url
 	c.username = username
 	c.password = password
@@ -34,12 +34,12 @@ func (c ExperianTestCall) SetExperianDetails(url, username, password string) {
 }
 
 // Dial ... Dial
-func (c ExperianTestCall) Dial(xmlToSend []byte) ([]byte, error) {
+func (c *ExperianTestCall) Dial(xmlToSend []byte) ([]byte, error) {
 	return xmlToSend, nil
 }
 
 // SetExperianDetails ... SetExperianDetails
-func (c ExperianCall) SetExperianDetails(url, username, password string) {
+func (c *ExperianCall) SetExperianDetails(url, username, password string) {
 	c.url = url
 	c.username = username
 	c.password = password
@@ -47,7 +47,7 @@ func (c ExperianCall) SetExperianDetails(url, username, password string) {
 }
 
 // Dial ... Dial
-func (c ExperianCall) Dial(xmlToSend []byte) ([]byte, error) {
+func (c *ExperianCall) Dial(xmlToSend []byte) ([]byte, error) {
 
 	client := &http.Client{}
 
