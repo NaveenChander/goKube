@@ -35,7 +35,7 @@ type CustomerTestDAL struct {
 }
 
 // SetDBVal ... SetDBVal
-func (dal CustomerSQLDAL) SetDBVal(dbServer, dbUser, dbPassword, dbCatalogue string, dbPort int) {
+func (dal *CustomerSQLDAL) SetDBVal(dbServer, dbUser, dbPassword, dbCatalogue string, dbPort int) {
 	dal.dbServer = dbServer
 	dal.dbUser = dbUser
 	dal.dbPassword = dbPassword
@@ -44,7 +44,7 @@ func (dal CustomerSQLDAL) SetDBVal(dbServer, dbUser, dbPassword, dbCatalogue str
 }
 
 // SetDBVal ... SetDBVal
-func (dal CustomerTestDAL) SetDBVal(dbServer, dbUser, dbPassword, dbCatalogue string, dbPort int) {
+func (dal *CustomerTestDAL) SetDBVal(dbServer, dbUser, dbPassword, dbCatalogue string, dbPort int) {
 	dal.dbServer = dbServer
 	dal.dbUser = dbUser
 	dal.dbPassword = dbPassword
@@ -53,7 +53,7 @@ func (dal CustomerTestDAL) SetDBVal(dbServer, dbUser, dbPassword, dbCatalogue st
 }
 
 // AddClientCredentialsCustomer ... Opens DB Connections and return a connection object
-func (dal CustomerSQLDAL) AddClientCredentialsCustomer(ClientAPIKey string, secret string, customerID int, startDate time.Time, endDate time.Time) (models.DBErrorTypes, string) {
+func (dal *CustomerSQLDAL) AddClientCredentialsCustomer(ClientAPIKey string, secret string, customerID int, startDate time.Time, endDate time.Time) (models.DBErrorTypes, string) {
 
 	isRollBack := false
 
@@ -92,7 +92,7 @@ func (dal CustomerSQLDAL) AddClientCredentialsCustomer(ClientAPIKey string, secr
 }
 
 // GetClientCredentials ... GetClientCredentials by Customer ID
-func (dal CustomerSQLDAL) GetClientCredentials(customerID int) (models.DBErrorTypes, []models.CustomerCredentials) {
+func (dal *CustomerSQLDAL) GetClientCredentials(customerID int) (models.DBErrorTypes, []models.CustomerCredentials) {
 
 	result := make([]models.CustomerCredentials, 1000)
 

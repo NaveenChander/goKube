@@ -29,7 +29,7 @@ type IDMatchTestDAL struct {
 }
 
 // SetDBVal ... SetDBVal
-func (idDal IDMatchSQLDAL) SetDBVal(dbServer, dbUser, dbPassword, dbCatalogue string, dbPort int) {
+func (idDal *IDMatchSQLDAL) SetDBVal(dbServer, dbUser, dbPassword, dbCatalogue string, dbPort int) {
 	idDal.dbServer = dbServer
 	idDal.dbUser = dbUser
 	idDal.dbPassword = dbPassword
@@ -38,7 +38,7 @@ func (idDal IDMatchSQLDAL) SetDBVal(dbServer, dbUser, dbPassword, dbCatalogue st
 }
 
 // SetDBVal ... SetDBVal
-func (idDal IDMatchTestDAL) SetDBVal(dbServer, dbUser, dbPassword, dbCatalogue string, dbPort int) {
+func (idDal *IDMatchTestDAL) SetDBVal(dbServer, dbUser, dbPassword, dbCatalogue string, dbPort int) {
 	idDal.dbServer = dbServer
 	idDal.dbUser = dbUser
 	idDal.dbPassword = dbPassword
@@ -48,7 +48,7 @@ func (idDal IDMatchTestDAL) SetDBVal(dbServer, dbUser, dbPassword, dbCatalogue s
 
 
 // CreateIDMatchRequest ... CreateIDMatchRequest
-func (idDal IDMatchSQLDAL) CreateIDMatchRequest(IDMatchRequestID uint64, request string) (models.DBErrorTypes, string) {
+func (idDal *IDMatchSQLDAL) CreateIDMatchRequest(IDMatchRequestID uint64, request string) (models.DBErrorTypes, string) {
 	isRollBack := false
 
 	connectionString := fmt.Sprintf("server=%s;user id=%s;password=%s;port=%d;database=%s",
@@ -89,7 +89,7 @@ func (idDal IDMatchSQLDAL) CreateIDMatchRequest(IDMatchRequestID uint64, request
 }
 
 // UpdateIDMatchResponse ... UpdateIDMatchResponse
-func (idDal IDMatchSQLDAL) UpdateIDMatchResponse(IDMatchRequestID uint64, response string) (models.DBErrorTypes, string) {
+func (idDal *IDMatchSQLDAL) UpdateIDMatchResponse(IDMatchRequestID uint64, response string) (models.DBErrorTypes, string) {
 	isRollBack := false
 
 	connectionString := fmt.Sprintf("server=%s;user id=%s;password=%s;port=%d;database=%s",

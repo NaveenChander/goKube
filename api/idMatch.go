@@ -29,7 +29,7 @@ func IDMatch(w http.ResponseWriter, r *http.Request) {
 	outbound := outbound.IDMatchCall{}
 	outbound.SetIDMatchDetails(configuration.EXPURL, configuration.EXPUSERNAME, configuration.EXPPASSWORD)
 
-	returnCode, returnValue := core.ProcessIDMatch(requestBody, idMatchdal, outbound)
+	returnCode, returnValue := core.ProcessIDMatch(requestBody, &idMatchdal, outbound)
 	if returnCode != models.HTTPOK {
 		w.WriteHeader(int(returnCode))
 		fmt.Fprintf(w, "Error returned :"+returnValue)

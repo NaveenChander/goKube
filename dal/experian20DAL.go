@@ -29,7 +29,7 @@ type ExperianTestDAL struct {
 }
 
 // SetDBVal ... SetDBVal
-func (expDal ExperianSQLDAL) SetDBVal(dbServer, dbUser, dbPassword, dbCatalogue string, dbPort int) {
+func (expDal *ExperianSQLDAL) SetDBVal(dbServer, dbUser, dbPassword, dbCatalogue string, dbPort int) {
 	expDal.dbServer = dbServer
 	expDal.dbUser = dbUser
 	expDal.dbPassword = dbPassword
@@ -38,7 +38,7 @@ func (expDal ExperianSQLDAL) SetDBVal(dbServer, dbUser, dbPassword, dbCatalogue 
 }
 
 // SetDBVal ... SetDBVal
-func (expDal ExperianTestDAL) SetDBVal(dbServer, dbUser, dbPassword, dbCatalogue string, dbPort int) {
+func (expDal *ExperianTestDAL) SetDBVal(dbServer, dbUser, dbPassword, dbCatalogue string, dbPort int) {
 	expDal.dbServer = dbServer
 	expDal.dbUser = dbUser
 	expDal.dbPassword = dbPassword
@@ -47,12 +47,13 @@ func (expDal ExperianTestDAL) SetDBVal(dbServer, dbUser, dbPassword, dbCatalogue
 }
 
 // CreateExperianRequest ... CreateExperianRequest
-func (expDal ExperianSQLDAL) CreateExperianRequest(experianRequestID uint64, request string) (models.DBErrorTypes, string) {
+func (expDal *ExperianSQLDAL) CreateExperianRequest(experianRequestID uint64, request string) (models.DBErrorTypes, string) {
 	isRollBack := false
 
 	connectionString := fmt.Sprintf("server=%s;user id=%s;password=%s;port=%d;database=%s",
 		expDal.dbServer, expDal.dbUser, expDal.dbPassword, expDal.dbPort, expDal.dbCatalogue)
 
+	log.Println("Connection String --> " + connectionString)
 	var err error
 
 	db, err = sql.Open("mssql", connectionString)
@@ -78,7 +79,7 @@ func (expDal ExperianSQLDAL) CreateExperianRequest(experianRequestID uint64, req
 	if err3 != nil {
 		tx.Rollback()
 		isRollBack = true
-		log.Println("CreateExperianRequest" + err3.Error())
+		log.Println("CreateExperianRequest: " + err3.Error())
 		return models.DBdmlFailed, err3.Error()
 	}
 	tx.Commit()
@@ -88,7 +89,7 @@ func (expDal ExperianSQLDAL) CreateExperianRequest(experianRequestID uint64, req
 }
 
 // UpdateExperianResponse ... UpdateExperianResponse
-func (expDal ExperianSQLDAL) UpdateExperianResponse(experianRequestID uint64, response string) (models.DBErrorTypes, string) {
+func (expDal *ExperianSQLDAL) UpdateExperianResponse(experianRequestID uint64, response string) (models.DBErrorTypes, string) {
 	isRollBack := false
 
 	connectionString := fmt.Sprintf("server=%s;user id=%s;password=%s;port=%d;database=%s",

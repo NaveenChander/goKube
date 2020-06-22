@@ -32,7 +32,7 @@ func AddClientCredentials(w http.ResponseWriter, r *http.Request) {
 	dalDep := dal.CustomerSQLDAL{}
 	dalDep.SetDBVal(configuration.DBSERVER, configuration.DBUSER, configuration.DBPASSWORD, configuration.DBCATALOGUE, configuration.DBPORT)
 
-	core.AddClientCredentials(cc, dalDep)
+	core.AddClientCredentials(cc, &dalDep)
 }
 
 // CreateAuthCode ... CreateAuthCode
