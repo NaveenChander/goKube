@@ -29,30 +29,30 @@ type IDMatchTestDAL struct {
 }
 
 // SetDBVal ... SetDBVal
-func (expDal IDMatchSQLDAL) SetDBVal(dbServer, dbUser, dbPassword, dbCatalogue string, dbPort int) {
-	expDal.dbServer = dbServer
-	expDal.dbUser = dbUser
-	expDal.dbPassword = dbPassword
-	expDal.dbCatalogue = dbCatalogue
-	expDal.dbPort = dbPort
+func (idDal IDMatchSQLDAL) SetDBVal(dbServer, dbUser, dbPassword, dbCatalogue string, dbPort int) {
+	idDal.dbServer = dbServer
+	idDal.dbUser = dbUser
+	idDal.dbPassword = dbPassword
+	idDal.dbCatalogue = dbCatalogue
+	idDal.dbPort = dbPort
 }
 
 // SetDBVal ... SetDBVal
-func (expDal IDMatchTestDAL) SetDBVal(dbServer, dbUser, dbPassword, dbCatalogue string, dbPort int) {
-	expDal.dbServer = dbServer
-	expDal.dbUser = dbUser
-	expDal.dbPassword = dbPassword
-	expDal.dbCatalogue = dbCatalogue
-	expDal.dbPort = dbPort
+func (idDal IDMatchTestDAL) SetDBVal(dbServer, dbUser, dbPassword, dbCatalogue string, dbPort int) {
+	idDal.dbServer = dbServer
+	idDal.dbUser = dbUser
+	idDal.dbPassword = dbPassword
+	idDal.dbCatalogue = dbCatalogue
+	idDal.dbPort = dbPort
 }
 
 
 // CreateIDMatchRequest ... CreateIDMatchRequest
-func (expDal IDMatchSQLDAL) CreateIDMatchRequest(IDMatchRequestID uint64, request string) (models.DBErrorTypes, string) {
+func (idDal IDMatchSQLDAL) CreateIDMatchRequest(IDMatchRequestID uint64, request string) (models.DBErrorTypes, string) {
 	isRollBack := false
 
 	connectionString := fmt.Sprintf("server=%s;user id=%s;password=%s;port=%d;database=%s",
-		expDal.dbServer, expDal.dbUser, expDal.dbPassword, expDal.dbPort, expDal.dbCatalogue)
+		idDal.dbServer, idDal.dbUser, idDal.dbPassword, idDal.dbPort, idDal.dbCatalogue)
 
 	var err error
 
@@ -89,11 +89,11 @@ func (expDal IDMatchSQLDAL) CreateIDMatchRequest(IDMatchRequestID uint64, reques
 }
 
 // UpdateIDMatchResponse ... UpdateIDMatchResponse
-func (expDal IDMatchSQLDAL) UpdateIDMatchResponse(IDMatchRequestID uint64, response string) (models.DBErrorTypes, string) {
+func (idDal IDMatchSQLDAL) UpdateIDMatchResponse(IDMatchRequestID uint64, response string) (models.DBErrorTypes, string) {
 	isRollBack := false
 
 	connectionString := fmt.Sprintf("server=%s;user id=%s;password=%s;port=%d;database=%s",
-		expDal.dbServer, expDal.dbUser, expDal.dbPassword, expDal.dbPort, expDal.dbCatalogue)
+		idDal.dbServer, idDal.dbUser, idDal.dbPassword, idDal.dbPort, idDal.dbCatalogue)
 
 	var err error
 

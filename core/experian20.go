@@ -8,7 +8,6 @@ import (
 	"regexp"
 	"time"
 
-	"github.com/naveenchander/GoKube/configuration"
 	"github.com/naveenchander/GoKube/dal"
 	"github.com/naveenchander/GoKube/models"
 	"github.com/naveenchander/GoKube/outbound"
@@ -41,7 +40,7 @@ func ProcessExperian20(incomingRequest string, expDal dal.IExperian, expOutbound
 
 	log.Println("Incoming Request -> " + string(data[:]))
 
-	flakeID := configuration.GetNextFlakeID()
+	flakeID := GetNextFlakeID()
 	returnValue, errValue := expDal.CreateExperianRequest(flakeID, incomingRequest)
 	if returnValue != models.DBOK {
 		return models.HTTPInternalServerError, errValue

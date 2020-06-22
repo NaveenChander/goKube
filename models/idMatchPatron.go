@@ -1,7 +1,5 @@
 package models
 
-import "time"
-
 //  IDMatchPatron ... IDMatchPatron
 type IDMatchPatron struct {
 	Name struct {
@@ -20,7 +18,7 @@ type IDMatchPatron struct {
 		State  string
 		Number string
 	}
-	Dob      time.Time
+	Dob      string
 	Phone    string
 	Product  string
 	PatronId string

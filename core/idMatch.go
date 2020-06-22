@@ -6,15 +6,14 @@ import (
 	"regexp"
 	"time"
 
-	"github.com/naveenchander/GoKube/configuration"
 	"github.com/naveenchander/GoKube/dal"
 	"github.com/naveenchander/GoKube/models"
 	"github.com/naveenchander/GoKube/outbound"
 )
 
 // ProcessIDMatch .. ProcessIDMatch
-func ProcessIDMatch(incomingRequest string, expDal dal.IIDMatch, expOutbound outbound.IIDMatch) (models.ApplicationErrorCodes, string) {
-	var patron models.Patron
+func ProcessIDMatch(incomingRequest string, idDal dal.IIDMatch, expOutbound outbound.IIDMatch) (models.ApplicationErrorCodes, string) {
+	var patron models.IDMatchPatron
 	json.Unmarshal([]byte(incomingRequest), &patron)
 
 	log.Println("------ Inside Core -----------")
@@ -24,8 +23,8 @@ func ProcessIDMatch(incomingRequest string, expDal dal.IIDMatch, expOutbound out
 		return models.HTTPBadRequest, err.Error()
 	}
 
-	if ret, errREG := regexp.Match(`^\d`, []byte(patron.TIN)); errREG != nil || ret == false {
-		log.Println("Invalid TIN number :" + patron.TIN)
+	if ret, errREG := regexp.Match(`^\d`, []byte(patron.Tin)); errREG != nil || ret == false {
+		log.Println("Invalid TIN number :" + patron.Tin)
 		return models.HTTPBadRequest, errREG.Error()
 	}
 
@@ -39,13 +38,13 @@ func ProcessIDMatch(incomingRequest string, expDal dal.IIDMatch, expOutbound out
 
 	log.Println("Incoming Request -> " + string(data[:]))
 
-	flakeID := configuration.GetNextFlakeID()
-	returnValue, errValue := expDal.CreateIDMatchRequest(flakeID, incomingRequest)
+	flakeID := GetNextFlakeID()
+	returnValue, errValue := idDal.CreateIDMatchRequest(flakeID, incomingRequest)
 	if returnValue != models.DBOK {
 		return models.HTTPInternalServerError, errValue
 	}
 
-	cacheValue, errCache := getCacheInBytes("IDMatch:" + patron.TIN)
+	cacheValue, errCache := getCacheInBytes("IDMatch:" + patron.Tin)
 	if errCache != nil {
 		log.Println("Data not found in Cache.  Proceeding to request IDMatch Cache.")
 
@@ -62,7 +61,7 @@ func ProcessIDMatch(incomingRequest string, expDal dal.IIDMatch, expOutbound out
 		// TODO: Check Returu Value and remove TODO
 
 		cacheValue = ret
-		_ = setCacheInBytes("IDMatch:"+patron.TIN, cacheValue, 60)
+		_ = setCacheInBytes("IDMatch:"+patron.Tin, cacheValue, 60)
 	} else {
 		log.Println("Found in Cache Responding from Cache")
 
@@ -71,14 +70,13 @@ func ProcessIDMatch(incomingRequest string, expDal dal.IIDMatch, expOutbound out
 
 	response := cacheValue
 
-	returnValue, errValue = expDal.UpdateIDMatchResponse(flakeID, string(response[:]))
+	returnValue, errValue = idDal.UpdateIDMatchResponse(flakeID, string(response[:]))
 	if returnValue != models.DBOK {
 		return models.HTTPInternalServerError, errValue
 	}
 	return models.HTTPOK, string(data[:])
 }
 
-func buildIDMatchRequest(patron models.Patron) ([]byte, error) {
-
+func buildIDMatchRequest(patron models.IDMatchPatron) ([]byte, error) {
 	return nil, nil
 }

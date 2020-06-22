@@ -9,6 +9,7 @@ import (
 	"syscall"
 
 	"github.com/naveenchander/GoKube/configuration"
+	"github.com/naveenchander/GoKube/core"
 	"github.com/naveenchander/GoKube/handlers"
 )
 
@@ -18,7 +19,7 @@ func main() {
 		configuration.Release,
 	)
 
-	configuration.InitStartup()
+	core.InitFlakeIDGenerator()
 
 	interupt := make(chan os.Signal, 1)
 	signal.Notify(interupt, os.Interrupt, syscall.SIGTERM)

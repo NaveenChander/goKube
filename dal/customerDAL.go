@@ -9,7 +9,6 @@ import (
 
 	_ "github.com/denisenkom/go-mssqldb"
 	"github.com/golang/protobuf/ptypes"
-	"github.com/naveenchander/GoKube/configuration"
 	"github.com/naveenchander/GoKube/models"
 )
 
@@ -20,10 +19,38 @@ var ctx context.Context
 type ICustomer interface {
 	AddClientCredentialsCustomer(ClientAPIKey string, secret string, customerID int, startDate time.Time, endDate time.Time) (models.DBErrorTypes, string)
 	GetClientCredentials(customerID int) (models.DBErrorTypes, []models.CustomerCredentials)
+	SetDBVal(dbServer, dbUser, dbPassword, dbCatalogue string, dbPort int)
 }
 
-type CustomerSQLDAL struct{}
-type CustomerTestDAL struct{}
+// CustomerSQLDAL ... CustomerSQLDAL
+type CustomerSQLDAL struct {
+	dbServer, dbUser, dbPassword, dbCatalogue string
+	dbPort                                    int
+}
+
+// CustomerTestDAL ... CustomerTestDAL
+type CustomerTestDAL struct {
+	dbServer, dbUser, dbPassword, dbCatalogue string
+	dbPort                                    int
+}
+
+// SetDBVal ... SetDBVal
+func (dal CustomerSQLDAL) SetDBVal(dbServer, dbUser, dbPassword, dbCatalogue string, dbPort int) {
+	dal.dbServer = dbServer
+	dal.dbUser = dbUser
+	dal.dbPassword = dbPassword
+	dal.dbCatalogue = dbCatalogue
+	dal.dbPort = dbPort
+}
+
+// SetDBVal ... SetDBVal
+func (dal CustomerTestDAL) SetDBVal(dbServer, dbUser, dbPassword, dbCatalogue string, dbPort int) {
+	dal.dbServer = dbServer
+	dal.dbUser = dbUser
+	dal.dbPassword = dbPassword
+	dal.dbCatalogue = dbCatalogue
+	dal.dbPort = dbPort
+}
 
 // AddClientCredentialsCustomer ... Opens DB Connections and return a connection object
 func (dal CustomerSQLDAL) AddClientCredentialsCustomer(ClientAPIKey string, secret string, customerID int, startDate time.Time, endDate time.Time) (models.DBErrorTypes, string) {
@@ -31,7 +58,7 @@ func (dal CustomerSQLDAL) AddClientCredentialsCustomer(ClientAPIKey string, secr
 	isRollBack := false
 
 	connectionString := fmt.Sprintf("server=%s;user id=%s;password=%s;port=%d;database=%s",
-		configuration.DBSERVER, configuration.DBUSER, configuration.DBPASSWORD, configuration.DBPORT, configuration.DBCATALOGUE)
+		dal.dbServer, dal.dbUser, dal.dbPassword, dal.dbPort, dal.dbCatalogue)
 
 	var err error
 
@@ -70,7 +97,7 @@ func (dal CustomerSQLDAL) GetClientCredentials(customerID int) (models.DBErrorTy
 	result := make([]models.CustomerCredentials, 1000)
 
 	connectionString := fmt.Sprintf("server=%s;user id=%s;password=%s;port=%d;database=%s",
-		configuration.DBSERVER, configuration.DBUSER, configuration.DBPASSWORD, configuration.DBPORT, configuration.DBCATALOGUE)
+		dal.dbServer, dal.dbUser, dal.dbPassword, dal.dbPort, dal.dbCatalogue)
 
 	var err error
 

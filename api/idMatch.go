@@ -23,13 +23,13 @@ func IDMatch(w http.ResponseWriter, r *http.Request) {
 	log.Println("Read body" + string(body[:]))
 	requestBody := string(body[:])
 
-	dal := dal.ExperianSQLDAL{}
-	dal.SetDBVal(configuration.DBSERVER, configuration.DBUSER, configuration.DBPASSWORD, configuration.DBCATALOGUE, configuration.DBPORT)
+	idMatchdal := dal.IDMatchSQLDAL{}
+	idMatchdal.SetDBVal(configuration.DBSERVER, configuration.DBUSER, configuration.DBPASSWORD, configuration.DBCATALOGUE, configuration.DBPORT)
 
-	outbound := outbound.ExperianCall{}
-	outbound.SetExperianDetails(configuration.EXPURL, configuration.EXPUSERNAME, configuration.EXPPASSWORD)
+	outbound := outbound.IDMatchCall{}
+	outbound.SetIDMatchDetails(configuration.EXPURL, configuration.EXPUSERNAME, configuration.EXPPASSWORD)
 
-	returnCode, returnValue := core.ProcessExperian20(requestBody, dal, outbound)
+	returnCode, returnValue := core.ProcessIDMatch(requestBody, idMatchdal, outbound)
 	if returnCode != models.HTTPOK {
 		w.WriteHeader(int(returnCode))
 		fmt.Fprintf(w, "Error returned :"+returnValue)
