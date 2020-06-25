@@ -18,11 +18,11 @@ var (
 	// EXPCachePeriod EXP MATCH Cache Period in Seconds
 	EXPCachePeriod = "60"
 	// EXPURL ... EXPURL
-	EXPURL = ""
+	EXPURL = "https://dm-sgw1.experian.com/fraudsolutions/xmlgateway/preciseid"
 	// EXPUSERNAME ... EXPUSERNAME
-	EXPUSERNAME = ""
+	EXPUSERNAME = "everi_demo"
 	// EXPPASSWORD ... EXPPASSWORD
-	EXPPASSWORD = ""
+	EXPPASSWORD = "Everi0401"
 	// CryptoKey ... Crypto Key
 	CryptoKey = "1709675319508246"
 )

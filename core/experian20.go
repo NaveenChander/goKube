@@ -25,15 +25,15 @@ func ProcessExperian20(incomingRequest string, expDal dal.IExperian, expOutbound
 		return models.HTTPBadRequest, err.Error()
 	}
 
-	if ret, errREG := regexp.Match(`^\d`, []byte(patron.TIN)); errREG != nil || ret == false {
+	if ret, err := regexp.Match(`^\d`, []byte(patron.TIN)); err != nil || ret == false {
 		log.Println("Invalid TIN number :" + patron.TIN)
-		return models.HTTPBadRequest, errREG.Error()
+		return models.HTTPBadRequest, err.Error()
 	}
 
-	if _, tErr := time.Parse("2006/01/02", patron.Dob); tErr != nil {
-		if _, tErr = time.Parse("01/02/2006", patron.Dob); tErr != nil {
+	if _, err := time.Parse("2006/01/02", patron.Dob); err != nil {
+		if _, err = time.Parse("01/02/2006", patron.Dob); err != nil {
 			log.Println("Invalid Date format Must be in [yyyy/mm/dd] or [mm/dd/yyyy] :" + patron.Dob)
-			return models.HTTPBadRequest, tErr.Error()
+			return models.HTTPBadRequest, err.Error()
 		}
 	}
 
@@ -52,19 +52,19 @@ func ProcessExperian20(incomingRequest string, expDal dal.IExperian, expOutbound
 		return models.HTTPInternalServerError, "Error while encrypting data"
 	}
 
-	returnValue, errValue := expDal.CreateExperianRequest(flakeID, encryptedValue)
+	returnValue, errDesc := expDal.CreateExperianRequest(flakeID, encryptedValue)
 	if returnValue != models.DBOK {
-		return models.HTTPInternalServerError, errValue
+		return models.HTTPInternalServerError, errDesc
 	}
 
 	cacheValue, errCache := getCacheInBytes("Experian:" + patron.TIN)
 	if errCache != nil {
 		log.Println("Data not found in Cache.  Proceeding to request Experian Cache.")
 
-		xmlForExperian, errXML := buildExperianRequest(patron)
-		if errXML != nil {
-			log.Println("Invalid Data while creating XML  :" + errXML.Error())
-			return models.HTTPBadRequest, errXML.Error()
+		xmlForExperian, err := buildExperianRequest(patron)
+		if err != nil {
+			log.Println("Invalid Data while creating XML  :" + err.Error())
+			return models.HTTPBadRequest, err.Error()
 		}
 
 		ret, err := expOutbound.Dial(xmlForExperian)
@@ -83,9 +83,9 @@ func ProcessExperian20(incomingRequest string, expDal dal.IExperian, expOutbound
 
 	response := cacheValue
 
-	returnValue, errValue = expDal.UpdateExperianResponse(flakeID, string(response[:]))
+	returnValue, errDesc = expDal.UpdateExperianResponse(flakeID, string(response[:]))
 	if returnValue != models.DBOK {
-		return models.HTTPInternalServerError, errValue
+		return models.HTTPInternalServerError, errDesc
 	}
 	return models.HTTPOK, string(data[:])
 }
@@ -119,11 +119,11 @@ func buildExperianRequest(patron models.Patron) ([]byte, error) {
 	products.PreciseIDServer.PrimaryApplicant.Name.Gen = patron.Name.Gen
 	products.PreciseIDServer.PrimaryApplicant.SSN = patron.TIN
 
-	t, tErr := time.Parse("2006/01/02", patron.Dob)
-	if tErr == nil {
+	t, err := time.Parse("2006/01/02", patron.Dob)
+	if err == nil {
 		products.PreciseIDServer.PrimaryApplicant.DOB = t.Format("01022006")
 	} else {
-		t, tErr = time.Parse("01/02/2006", patron.Dob)
+		t, err = time.Parse("01/02/2006", patron.Dob)
 		products.PreciseIDServer.PrimaryApplicant.DOB = t.Format("01022006")
 	}
 
@@ -143,10 +143,10 @@ func buildExperianRequest(patron models.Patron) ([]byte, error) {
 	products.PreciseIDServer.PrimaryApplicant.Phones.Phone = append(products.PreciseIDServer.PrimaryApplicant.Phones.Phone, phone)
 	experian.FraudSolutions.Request.Products = append(experian.FraudSolutions.Request.Products, products)
 
-	returnString, errXML := xml.MarshalIndent(experian, "", " ")
+	returnString, err := xml.MarshalIndent(experian, "", " ")
 
-	if errXML != nil {
-		return nil, errors.New("Error Parsing XML ->" + errXML.Error())
+	if err != nil {
+		return nil, errors.New("Error Parsing XML ->" + err.Error())
 	}
 	return returnString, nil
 }

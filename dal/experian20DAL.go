@@ -88,6 +88,11 @@ func (expDal *ExperianSQLDAL) CreateExperianRequest(experianRequestID uint64, re
 
 }
 
+// CreateExperianRequest ... CreateExperianRequest
+func (expDal *ExperianTestDAL) CreateExperianRequest(experianRequestID uint64, request string) (models.DBErrorTypes, string) {
+	return models.DBOK, ""
+}
+
 // UpdateExperianResponse ... UpdateExperianResponse
 func (expDal *ExperianSQLDAL) UpdateExperianResponse(experianRequestID uint64, response string) (models.DBErrorTypes, string) {
 	isRollBack := false
@@ -125,4 +130,9 @@ func (expDal *ExperianSQLDAL) UpdateExperianResponse(experianRequestID uint64, r
 
 	return models.DBOK, "OK"
 
+}
+
+// UpdateExperianResponse ... UpdateExperianResponse
+func (expDal *ExperianTestDAL) UpdateExperianResponse(experianRequestID uint64, response string) (models.DBErrorTypes, string) {
+	return models.DBOK, ""
 }
