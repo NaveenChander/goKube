@@ -1,10 +1,13 @@
-FROM golang:1.14
+FROM golang:1.16-alpine
 
-WORKDIR C:/Users/naveen.prabhaker/go/src/github.com/naveenchander/GoKube
+COPY . /app
+WORKDIR /app
 
-COPY GoKube.exe .
+RUN GO BUILD GoKube
+
+COPY GoKube .
 
 ENV Port=8000
 EXPOSE $Port
 
-CMD ["GoKube.exe"]
+CMD ["GoKube"]
